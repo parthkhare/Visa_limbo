@@ -2,7 +2,7 @@ baseurl = "/"
 languageCode = "en-us"
 title = "Visa Limbo"
 theme = "blackburn"
-author = "Yoshiharu Yamashita"
+author = "parth khare"
 copyright = "&copy; 2022. All rights reserved."
 canonifyurls = true
 relativeurls = true
@@ -14,7 +14,7 @@ paginate = 10
 
 [params]
   # Shown in the home page
-  subtitle = "A Hugo Theme"
+  subtitle = "Analysing delays in visa across countries"
   brand = "Blackburn"
   googleAnalytics = "Your Google Analytics tracking ID"
   disqus = "Your Disqus shortname"
