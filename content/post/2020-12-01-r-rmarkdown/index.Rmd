@@ -1,0 +1,65 @@
+---
+title: "Visa limbo"
+author: "Parth Khare"
+date: 2020-12-01T21:13:14-05:00
+categories: ["R"]
+tags: ["R Markdown", "visa", "USA", "lags"]
+---
+ 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE)
+library(data.table);library(readxl);library(ggplot2)
+```
+
+# Visa Limbo
+
+Visa across all categories have been delayed
+
+
+```{r, echo=FALSE, warning=FALSE, message=F}
+source('/Users/parthkhare/Desktop/CGD/Projects/Visa_lag/visap_codes/visalag_anlys.R')
+# Scraped Data Stats
+# --------------
+scp <- read_excel('/Users/parthkhare/Desktop/CGD/Projects/Visa_lag/data/Scrapeddt_14jun22.xlsx')
+scp <- data.table(scp)
+# View(scp)
+
+# rename
+names(scp)[names(scp) == "Visitor Visa"]  <- "VisitorVisa"
+names(scp)[names(scp) == "Student/Exchange Visitor Visas"]  <- "Student_ExchangeVisitorVisas"
+names(scp)[names(scp) == "All Other Nonimmigrant Visas"]  <- "AllOtherNonimmigrantVisas"
+
+
+# convert to numeric
+# --------------
+scp$VisitorVisa <- gsub("Days","",scp$VisitorVisa)
+scp$VisitorVisa <- as.numeric(scp$VisitorVisa)
+scp$Student_ExchangeVisitorVisas <- gsub("Days","",scp$Student_ExchangeVisitorVisas)
+scp$Student_ExchangeVisitorVisas <- as.numeric(scp$Student_ExchangeVisitorVisas)
+scp$AllOtherNonimmigrantVisas <- gsub("Days","",scp$AllOtherNonimmigrantVisas)
+scp$AllOtherNonimmigrantVisas <- as.numeric(scp$AllOtherNonimmigrantVisas)
+
+scpres <- melt(scp2, measure.vars = c( "VisitorVisa","Student_ExchangeVisitorVisas","AllOtherNonimmigrantVisas"),
+               variable.name = "Visatype", value.name = "Waittime_days")
+
+```
+
+
+```{r scpres, echo=FALSE, warning=FALSE}
+# # density plots
+# ggplot(scpres, aes(Waittime_days, group=Visatype, color=Visatype)) + geom_density() +
+#   ggtitle("US Visa lag 14 June 2022")
+
+# geom bar
+ggplot(scpres, aes(Visatype, fill=Visatype)) + geom_bar(aes(weight = Waittime_days)) +
+  ggtitle("US Visa lag 14 June 2022") + theme(axis.text.x=element_text(angle=15,hjust=1))
+```
+<!-- ![](/cleaning-variant/ephemeral.png){width=500px} -->
+  
+  
+# Including Plots
+  
+Embed plots
+
+
+
