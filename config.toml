@@ -1,8 +1,8 @@
 baseurl = "/"
 languageCode = "en-us"
 title = "Visa Limbo"
-theme = "Lags in visa"
-author = "parth khare"
+theme = "blackburn"
+author = "Yoshiharu Yamashita"
 copyright = "&copy; 2022. All rights reserved."
 canonifyurls = true
 relativeurls = true
