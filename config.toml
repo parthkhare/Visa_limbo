@@ -8,9 +8,6 @@ canonifyurls = true
 relativeurls = true
 paginate = 10
 
-
-![](/images/Visa_limbologo.png)
-
 [indexes]
   tag = "tags"
   topic = "topics"
