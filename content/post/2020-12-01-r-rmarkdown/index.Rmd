@@ -54,8 +54,7 @@ scpres <- melt(scp2, measure.vars = c( "VisitorVisa","Student_ExchangeVisitorVis
 ggplot(scpres, aes(Visatype, fill=Visatype)) + geom_bar(aes(weight = Waittime_days)) +
   ggtitle("US Visa lag 14 June 2022") + theme(axis.text.x=element_text(angle=15,hjust=1))
 ```
-<!-- ![](/cleaning-variant/ephemeral.png){width=500px} -->
-  
+
   
 # Including Plots
   
