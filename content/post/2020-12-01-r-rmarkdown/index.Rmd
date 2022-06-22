@@ -14,7 +14,8 @@ library(data.table);library(readxl);library(ggplot2)
 
 # Visa Limbo
 
-![](cleaning-variant/ephemeral.png){width=500px}
+![](/static/images/Visa_limbologo.png){width=500px}
+
 
 Visa across all categories have been delayed
 
