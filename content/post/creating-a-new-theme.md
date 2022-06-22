@@ -6,6 +6,7 @@ linktitle: Creating a New Theme
 title: Creating a New Theme
 weight: 10
 ---
+active: FALSE
 
 
 ## Introduction
