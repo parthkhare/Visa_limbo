@@ -12,56 +12,74 @@ library(data.table);library(readxl);library(ggplot2)
 ```
 
 
-# Visa Limbo
+## Procedural delays in US visa 
 
-![](/static/images/Visa_limbologo.png){width=500px}
+![](/images/Visa_limbologo.png){width=500px}
 
-
+On June 10th, US Department of Immigration anouned that the
 Visa across all categories have been delayed
 
 
+
+## For visitor visa
+
+
 ```{r, echo=FALSE, warning=FALSE, message=F}
-source('/Users/parthkhare/Desktop/CGD/Projects/Visa_lag/visap_codes/visalag_anlys.R')
 # Scraped Data Stats
 # --------------
-scp <- read_excel('/Users/parthkhare/Desktop/CGD/Projects/Visa_lag/data/Scrapeddt_14jun22.xlsx')
-scp <- data.table(scp)
-# View(scp)
+scpdt_base <- read.csv('/Users/parthkhare/Desktop/CGD/Projects/Visa_lag/data/visascraped_base_mapped.csv')
+scpdt_base$X <- NULL
+scpdt_base <- data.table(scpdt_base)
 
-# rename
-names(scp)[names(scp) == "Visitor Visa"]  <- "VisitorVisa"
-names(scp)[names(scp) == "Student/Exchange Visitor Visas"]  <- "Student_ExchangeVisitorVisas"
-names(scp)[names(scp) == "All Other Nonimmigrant Visas"]  <- "AllOtherNonimmigrantVisas"
+# ------------------------
+# Charts: most delayed countries
+# ------------------------
+# Aggregate delay by countries
+scpdt_cty <- scpdt_base[,.(VisitorVisa = mean(VisitorVisa, na.rm=T), 
+                        Student_ExchangeVisitorVisas=mean(Student_ExchangeVisitorVisas, na.rm=T),
+                        AllOtherNonimmigrantVisas=mean(AllOtherNonimmigrantVisas,na.rm=T)), 
+                        by = .(Country, date)]
 
 
-# convert to numeric
-# --------------
-scp$VisitorVisa <- gsub("Days","",scp$VisitorVisa)
-scp$VisitorVisa <- as.numeric(scp$VisitorVisa)
-scp$Student_ExchangeVisitorVisas <- gsub("Days","",scp$Student_ExchangeVisitorVisas)
-scp$Student_ExchangeVisitorVisas <- as.numeric(scp$Student_ExchangeVisitorVisas)
-scp$AllOtherNonimmigrantVisas <- gsub("Days","",scp$AllOtherNonimmigrantVisas)
-scp$AllOtherNonimmigrantVisas <- as.numeric(scp$AllOtherNonimmigrantVisas)
+# ----------------------------------------
+# Charts for all visa types separately
+# ----------------------------------------
+# Visitor Visa more than one year
+ggplot(scpdt_cty[scpdt_cty$VisitorVisa>365,], aes(x=reorder(Country,-VisitorVisa), y=VisitorVisa)) + 
+  geom_bar(fill='red',stat='identity') + ggtitle("US Visa Waitime: Visitor Visa > 1 year") +  
+  theme_minimal() + theme(axis.text.x=element_text(angle=90,hjust=1))+ xlab('Country') +
+  ylab('Waitime by country (avg across Embassies)')
 
-scpres <- melt(scp2, measure.vars = c( "VisitorVisa","Student_ExchangeVisitorVisas","AllOtherNonimmigrantVisas"),
+```
+
+## For all categories of visatype
+
+
+```{r scpdt_cty, echo=FALSE, warning=FALSE}
+
+# Charts for all visa types combined
+# ----------------------------------------
+# reshape data
+scpct_res <- melt(scpdt_cty, measure.vars = c( "VisitorVisa","Student_ExchangeVisitorVisas","AllOtherNonimmigrantVisas"),
                variable.name = "Visatype", value.name = "Waittime_days")
 
+# CI: remove or keep countries
+keep_cty <- c('ARM','JOR','PAN','KEN','BGD','GHA','TUR','NGA','BRB','GUY','ETH','JAM',
+              'MKD','COL','COD','ESP','KGZ','ISR','ARE','IRQ','GRC','URY','DOM','VEN',
+              'CHL','ECU','CRI','DJI','AUS','CAN','MNG','MEX','BEN','ARG','FIN','SEN',
+              'XXR','PAK','BFA','NLD','FRA','PER','IND','LBR','CZE','MLT','UGA','EGY')
+
+# CI: geom bar for all countries
+ggplot(scpct_res[scpct_res$Country %in% keep_cty], 
+       aes(x=reorder(Country,-Waittime_days),y=Waittime_days,fill=Visatype)) + 
+  geom_bar(stat='identity') + ggtitle("US Visa Waitime") +  
+  theme_minimal() + theme(axis.text.x=element_text(angle=90,hjust=1))+ xlab('Country') +
+  ylab('Waitime in days by country (avg across Embassies)')
 ```
 
 
-```{r scpres, echo=FALSE, warning=FALSE}
-# # density plots
-# ggplot(scpres, aes(Waittime_days, group=Visatype, color=Visatype)) + geom_density() +
-#   ggtitle("US Visa lag 14 June 2022")
 
-# geom bar
-ggplot(scpres, aes(Visatype, fill=Visatype)) + geom_bar(aes(weight = Waittime_days)) +
-  ggtitle("US Visa lag 14 June 2022") + theme(axis.text.x=element_text(angle=15,hjust=1))
-```
-
-  
 # Including Plots
-  
 Embed plots
 
 
